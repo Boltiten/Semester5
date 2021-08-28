@@ -40,6 +40,12 @@
         "xstddef": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
+        "xutility": "cpp",
+        "cctype": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "chrono": "cpp"
         "xutility": "cpp"
+
     }
 }
