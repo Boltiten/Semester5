@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "atomic": "cpp",
+        "cctype": "cpp",
         "cmath": "cpp",
         "compare": "cpp",
         "concepts": "cpp",
@@ -24,6 +25,7 @@
         "ostream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
+        "string": "cpp",
         "system_error": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
@@ -43,5 +45,7 @@
         "string": "cpp",
         "vector": "cpp",
         "chrono": "cpp"
+        "xutility": "cpp"
+
     }
 }
