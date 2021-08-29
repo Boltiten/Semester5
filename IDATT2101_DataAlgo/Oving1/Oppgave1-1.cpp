@@ -37,9 +37,20 @@ int main(){
     int tmp = 0;
     std::string handlinger;
 
+    /**
+     * Så denne koden funker slik:
+     * Hvis kursforandringen er noe annet enn 0, så setter vi den til tmp.
+     * Der etter har vi en sjekk hva siste handlingen er
+     * Hvis det ikke er et kjøp så kan vi kjøpe. Altså etter salg eller før vi har gjort noen handling.
+     * Hvis vi har kjøpt, så kan vi selge.
+     * Inne i disse sjekkene så ser vi om tmp er positiv eller negativ.
+     * Hvis vi har solgt så kjører kjøp sjekken. Den ser etter neste positive forandring, for da er aksjen på bunn.
+     * Motsatt når vi selger, den sjekker etter når aksjen vil gå negativ, da vil den selge, og den vil alltid ha kjøpt for å nå hit.
+     * (Unntak om første forandring er positiv eller 0)
+     * */
     for (size_t i = 0; i < arrSize; i++)
     {
-        if(kursforandring[i]<0 || kursforandring[i]>0){
+        if(kursforandring[i] != 0){
             tmp = kursforandring[i];
         }
 
@@ -68,10 +79,12 @@ int main(){
     }
 
     //Ta tid til hit
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();    
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     //Skriver ut kjøps og salg dager
     std::cout<<handlinger<<std::endl;
 
+    //farten på denne burde være O(n), siden vi bare kjører 1 forloop. 
+    //Omega(n) blir også laveste mulige fordi vi kjører igjennom hele arrayet en gang uansett om vi utfører noe logikk.
     //Skriv ut tid
     std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
     return 0;
