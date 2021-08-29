@@ -15,7 +15,7 @@ Handling SISTHANDLING = Handling::INGEN;
 int main(){
     //putte randomme tall fra -10 til 10 i en array, skulle jobbet med vector, men akk ble array nå..
     srand(time(NULL));
-    signed char kursforandring[10000]; 
+    signed char kursforandring[1000000]; 
     int arrSize = sizeof(kursforandring)/sizeof(kursforandring[0]);
     for (size_t i = 0; i < arrSize; i++)
     {
@@ -47,6 +47,7 @@ int main(){
      * Hvis vi har solgt så kjører kjøp sjekken. Den ser etter neste positive forandring, for da er aksjen på bunn.
      * Motsatt når vi selger, den sjekker etter når aksjen vil gå negativ, da vil den selge, og den vil alltid ha kjøpt for å nå hit.
      * (Unntak om første forandring er positiv eller 0)
+     * Også en sjekk om det er siste dag på kjøp, for da får du ikke noe dag å selge på.
      * */
     for (size_t i = 0; i < arrSize; i++)
     {
@@ -78,7 +79,7 @@ int main(){
         }
     }
 
-    //Ta tid til hit
+    //Ta tiden til løkken er kjørt, tar ikke tiden å printe svaret
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     //Skriver ut kjøps og salg dager
     std::cout<<handlinger<<std::endl;
