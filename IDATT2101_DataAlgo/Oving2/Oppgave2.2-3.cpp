@@ -17,9 +17,9 @@ int main(){
     do{        
         testRecursion = recursion(base,potens);
         rounds++;
-    } while (rounds < 10000);
+    } while (rounds < 1000000);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count()  /pow(10,9)<< "[s]"<< std::endl;
     std::cout<<testRecursion<<std::endl;
     return 0;
 }
