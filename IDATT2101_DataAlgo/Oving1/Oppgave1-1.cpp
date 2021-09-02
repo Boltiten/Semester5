@@ -10,21 +10,21 @@ int main()
     //putte randomme tall fra -10 til 10 i en array, skulle jobbet med vector, men akk ble array nå..
 
     //random seed om vi vil teste tilfeldige seeds. Vanskelig å sjekke resultater med random
-    srand(time(NULL));
+    /* srand(time(NULL));
     
-    signed char kursforandring[10000];
+    signed char kursforandring[1000000];
     int arrSize = sizeof(kursforandring) / sizeof(kursforandring[0]);
     for (size_t i = 0; i < arrSize; i++)
     {
         kursforandring[i] = (rand() % 21) - 10;
     }
-    double kurs[10000];
+    double kurs[1000000]; */
 
     //Om du vil bruke den oppgitte tabellen
 
-    /* signed char kursforandring[] = {-1,3,-9,2,2,-1,2,-1,-5};
+    signed char kursforandring[] = {-1,3,-9,2,2,-1,2,-1,-5};
     double kurs[9];
-    int arrSize = sizeof(kursforandring)/sizeof(kursforandring[0]); */ 
+    int arrSize = sizeof(kursforandring)/sizeof(kursforandring[0]);
 
     //Printer kjøp på dagene 1,3,6 og salg på 2,5,7
 
