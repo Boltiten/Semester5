@@ -34,6 +34,7 @@ void read_temperatures(double temperatures[], int length){
             between++;
         }
     }
+    temperatureFile.close();
     std::cout<<"Temperaturer under 10 grader:        "<<under<<std::endl;
     std::cout<<"Temperaturer mellom 10 og 20 grader: "<<between<<std::endl;
     std::cout<<"Temperaturer over 20 grader:         "<<over<<std::endl;  

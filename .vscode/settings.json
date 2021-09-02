@@ -42,7 +42,7 @@
         "cctype": "cpp",
         "string": "cpp",
         "vector": "cpp",
-        "chrono": "cpp"
-
+        "chrono": "cpp",
+        "ratio": "cpp"
     }
 }
