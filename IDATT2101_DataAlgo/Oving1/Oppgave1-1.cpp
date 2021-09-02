@@ -3,90 +3,93 @@
 #include <chrono>
 #include <cstdlib>
 #include <time.h>
+#include <vector>
 
-enum Handling {
-    INGEN,
-    KJOP,
-    SALG
-};
-
-Handling SISTHANDLING = Handling::INGEN;
-
-int main(){
+int main()
+{
     //putte randomme tall fra -10 til 10 i en array, skulle jobbet med vector, men akk ble array nå..
+
+    //random seed om vi vil teste tilfeldige seeds. Vanskelig å sjekke resultater med random
     srand(time(NULL));
-    signed char kursforandring[1000000]; 
-    int arrSize = sizeof(kursforandring)/sizeof(kursforandring[0]);
+    
+    signed char kursforandring[10000];
+    int arrSize = sizeof(kursforandring) / sizeof(kursforandring[0]);
     for (size_t i = 0; i < arrSize; i++)
     {
-        kursforandring[i] = (rand()%21) -10;
+        kursforandring[i] = (rand() % 21) - 10;
     }
+    double kurs[10000];
 
     //Om du vil bruke den oppgitte tabellen
-    //signed char kursforandring[] = {-1,3,-9,2,2,-1,2,-1,-5};
-    //int arrSize = sizeof(kursforandring)/sizeof(kursforandring[0]);
-    //Printer kjøp på dagene 1,3,6 og salg på 2,5,7
 
+    /* signed char kursforandring[] = {-1,3,-9,2,2,-1,2,-1,-5};
+    double kurs[9];
+    int arrSize = sizeof(kursforandring)/sizeof(kursforandring[0]); */ 
+
+    //Printer kjøp på dagene 1,3,6 og salg på 2,5,7
 
     //Ta tid herifra
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-    //initialiserer kjøp og salgdag
-    int kjopDag = -1;
-    int selgDag = -1;
-    int tmp = 0;
-    std::string handlinger;
-
+    double tmpBottom = 100;
+    double bottom = -1;
+    double tmpTop = 0;
+    double top = 1;
+    int kjop, salg;
     /**
-     * Så denne koden funker slik:
-     * Hvis kursforandringen er noe annet enn 0, så setter vi den til tmp.
-     * Der etter har vi en sjekk hva siste handlingen er
-     * Hvis det ikke er et kjøp så kan vi kjøpe. Altså etter salg eller før vi har gjort noen handling.
-     * Hvis vi har kjøpt, så kan vi selge.
-     * Inne i disse sjekkene så ser vi om tmp er positiv eller negativ.
-     * Hvis vi har solgt så kjører kjøp sjekken. Den ser etter neste positive forandring, for da er aksjen på bunn.
-     * Motsatt når vi selger, den sjekker etter når aksjen vil gå negativ, da vil den selge, og den vil alltid ha kjøpt for å nå hit.
-     * (Unntak om første forandring er positiv eller 0)
-     * Også en sjekk om det er siste dag på kjøp, for da får du ikke noe dag å selge på.
+     * Ble ikke super pent siden alt ble bassert på forrige innlevering.
+     * Synest oppgaven var altfor dårlig forklart og åpen til tolkning,
+     * det er litt ukult etter at vi har så lite tid på å fikse den etter misstolkning.
+     * MEN, dette skal fungere og skal gjøre
      * */
+
+
+    //Bruker denne for å oversikt på kursen, ble lettere å tenke da.
     for (size_t i = 0; i < arrSize; i++)
     {
-        if(kursforandring[i] != 0){
-            tmp = kursforandring[i];
+        if (i == 0)
+        {
+            kurs[0] = 100;
         }
-
-        //kan kjøpe enten når ingen handling er gjort eller når man har solgt.
-        if(SISTHANDLING != Handling::KJOP){
-            if(i+1<arrSize
-            && tmp<0 
-            && kursforandring[i+1]>0){
-                handlinger += "Kjøp dag: " + std::to_string(i+1) + ".\n";
-                SISTHANDLING = Handling::KJOP;
-            }
-        }
-        //kan selge når sist handling er et kjøp
-        if(SISTHANDLING == Handling::KJOP){
-            if(i+1<arrSize
-            && tmp>0 
-            && kursforandring[i+1]<0){
-                handlinger += "Salg dag: " + std::to_string(i+1) + ".\n";
-                SISTHANDLING = Handling::SALG;
-            } else if (i+1 == arrSize 
-            && tmp>0) {
-                handlinger += "Salg dag: " + std::to_string(i+1) + ".\n";
-                SISTHANDLING = Handling::SALG;
-            }
+        else if (i != 0)
+        {
+            kurs[i] = kurs[i - 1] + (kurs[i - 1] * kursforandring[i] / 100);
         }
     }
 
-    //Ta tiden til løkken er kjørt, tar ikke tiden å printe svaret
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    //Skriver ut kjøps og salg dager
-    std::cout<<handlinger<<std::endl;
 
-    //farten på denne burde være O(n), siden vi bare kjører 1 forloop. 
-    //Omega(n) blir også laveste mulige fordi vi kjører igjennom hele arrayet en gang uansett om vi utfører noe logikk.
-    //Skriv ut tid
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+    //Sammenligner lave punkter mot høye punkter, setter Top og Bottom til den største forsjellen vi finner.
+    //Kunne blitt gjort mer optimalt med å bare sjekke punktene hvor det snur. kanskje noe lagring av verdier som er værdt å sjekke.
+    for (int i = 0; i < arrSize; i++)
+    {
+        if (kurs[i] < tmpBottom && !(i > arrSize - 1))
+        {
+            tmpBottom = kurs[i];
+            tmpTop = 0;
+            //sjekk mot de høyere kursene etter denne dagen
+            for (int j = i + 1; j < arrSize; j++)
+            {
+                if (kurs[j]> kurs[i])
+                {
+                    tmpTop = kurs[j];
+                    //sjekk nye top/bunn med beste top/bunn
+                    if(top/bottom < tmpTop/tmpBottom){
+                            top=tmpTop;
+                            bottom=tmpBottom;
+                            kjop = i;
+                            salg = j;
+                    }
+
+                }
+            }
+        }
+    }
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt: " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() << "[ns]" << std::endl;
+    std::cout << "Kjøps dag: " << kjop + 1 << std::endl;
+    std::cout << "Salgs dag: " << salg + 1 << std::endl;
+    //sjekke kurs på kjøp og salgsdagene
+    std::cout << "Kurs Kjøps dag: " << kurs[kjop] << std::endl;
+    std::cout << "Kurs Salgs dag: " << kurs[salg] << std::endl;
+
     return 0;
 }
