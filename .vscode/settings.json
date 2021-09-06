@@ -43,6 +43,7 @@
         "string": "cpp",
         "vector": "cpp",
         "chrono": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "algorithm": "cpp"
     }
 }
