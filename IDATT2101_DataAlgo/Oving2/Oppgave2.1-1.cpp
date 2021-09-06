@@ -7,8 +7,8 @@
 double recursion(double x, int n);
 
 int main(){
-    double base = 1.001;
-    int potens = 5000;
+    double base = 1.0001;
+    int potens = 10000;
     double testRecursion;
     int rounds = 0;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
