@@ -44,6 +44,8 @@
         "vector": "cpp",
         "chrono": "cpp",
         "ratio": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "array": "cpp",
+        "string_view": "cpp"
     }
 }

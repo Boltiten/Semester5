@@ -1,46 +1,49 @@
 #include <iostream>
 #include <algorithm>
-#include <vector>
+#include <array>
 #include <chrono>
 
 
 void bytt(int, int);
-int splitt(std::vector<int> t, int v, int h);
-int median3sort (std::vector<int>, int, int);
-std::vector<int> quicksort(std::vector<int>, int, int);
-std::vector<int> quickSortMedHjelp(std::vector<int>, int , int);
-std::vector<int> helpSort(std::vector<int>, int, int);
+int splitt(int t, int v, int h);
+int median3sort (int t,  int v, int h);
+int quicksort(int t,  int v, int h);
+int quickSortMedHjelp(int t, int v, int h);
+int helpSort(int t, int v, int h);
 
 int main(){
     //Make vector, fill with a million numbers (later, don't print it lul)
-    std::vector<int> t1{};
-    for (size_t i = 0; i < 1000000; i++)
+    int arr1[10];
+    int arr2[10];
+    int arrSize = sizeof(arr1)/sizeof(arr1[0]);
+    for (size_t i = 0; i < arrSize; i++)
     {
-        t1.push_back(rand() % 1000000);
+        arr1[i] = rand() % 10;
+        arr2[i] = arr1[i];
     }
-    
 
-    std::vector<int> t2 = t1;
     double checksum = 0;
 
     //print unsorted
     //print check sum
-    for (auto x : t2){
-        checksum += x;
+    for (size_t i = 0; i < arrSize; i++)
+    {
+        checksum += arr1[i];
     }
+    
     std::cout<<"\n";
     std::cout<<"checksum: "<< checksum << std::endl;
 
     //Timer Start
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    t1 = quicksort(t1, t1.front(), t1.back());
+    quicksort(arr1, arr1[0], arr1[arrSize-1]);
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     //Timer end
     std::cout<<"t1 time: "<<std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()<<"[ns]"<<std::endl;
 
     //Timer Start
     begin = std::chrono::steady_clock::now();
-    t2 = quickSortMedHjelp(t2, t2.back(), t2.front());
+    quickSortMedHjelp(arr2, arr2[0], arr2[arrSize-1]);
     end = std::chrono::steady_clock::now();
     //Timer end
     std::cout<<"t2 time: "<<std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count()<<"[ns]"<<std::endl;
@@ -48,8 +51,8 @@ int main(){
     //print sorted
     checksum = 0;
     std::cout<<"Sorted \n";
-    for (auto x : t2){
-        checksum += x;
+    for (auto x : arr2){
+        checksum += arr2[x];
     }
     std::cout<<"checksum: "<< checksum << std::endl;
 
@@ -66,7 +69,7 @@ void bytt(int i, int j){
     i = k;
 }
 
-int splitt(std::vector<int> t, int v, int h){
+int splitt(int t, int v, int h){
     int iv, ih;
     int m = median3sort(t, v, h);
     int dv = t[m];
@@ -81,7 +84,7 @@ int splitt(std::vector<int> t, int v, int h){
     return iv;
 }
 
-int median3sort (std::vector<int> t, int v, int h) {
+int median3sort (int t*, int v, int h) {
     int m = (v+h)/2;
     if(t[v] > t[m]) bytt(t[v], t[m]);
     if(t[m] > t[h]){
@@ -92,7 +95,7 @@ int median3sort (std::vector<int> t, int v, int h) {
 }
 
 
-std::vector<int> quicksort(std::vector<int> t, int v, int h){
+int quicksort(int t*, int v, int h){
     //Quicksort
     if(h-v > 2){
         int delepos = splitt(t,v,h);
@@ -101,7 +104,7 @@ std::vector<int> quicksort(std::vector<int> t, int v, int h){
     } else median3sort(t,v,h);
     return t;
 }
-std::vector<int> quickSortMedHjelp(std::vector<int> t, int v, int h){
+int quickSortMedHjelp(int t*, int v, int h){
     //Quicksort, men kanselleres etter en x mengde kjøringer for å bruke en annen metode
     if(h-v > 2){
         int delepos = splitt(t,v,h);
@@ -113,6 +116,6 @@ std::vector<int> quickSortMedHjelp(std::vector<int> t, int v, int h){
     return t;
 }
 
-std::vector<int> helpSort(std::vector<int> t, int v, int h){
+int helpSort(int t*, int v, int h){
     return t;
 }
