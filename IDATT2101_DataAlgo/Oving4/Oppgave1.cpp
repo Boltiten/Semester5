@@ -1,85 +1,102 @@
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 
-typedef struct NodeStruct {
-    double element;
-    struct NodeStruct* neste;
-} Node;
+struct Node
+{
+    int data;
+    struct Node *next;
+};
 
-Node* nyNode(double e, Node* n){
-    Node* res = (Node*)(malloc(sizeof(Node)));
-    res->element = e;
-    res->neste = n;
-    return res;
-}
+//Linker til seg selv
+Node *newNode(int data)
+{
+    Node *node = new Node;
+    node->data = data;
+    node->next = NULL;
 
-typedef struct {
-    Node* hode;
-    int antElementer;
-} EnkelLenke;
+    return node;
+}
+Node *createList(int size)
+{
+    Node *head = NULL;
+    Node *node = NULL;
+    Node *nextNode = NULL;
 
-void settInnFremst(EnkelLenke* l, double verdi){
-    Node* ny = nyNode(verdi,l->hode);
-    l->hode = ny;
-    l->antElementer++;
-}
-
-void settInnBakerst(EnkelLenke* l, double verdi){
-    Node* ny = nyNode(verdi,NULL);
-    if (l->hode){
-        Node* denne = l->hode;
-        while(denne->neste) denne = denne->neste;
-    }else l->hode = ny;
-    l->antElementer++;
-}
-Node* fjern(EnkelLenke* l, Node* n){
-    Node* forrige = NULL;
-    Node* denne = l->hode;
-    while(denne&& denne != n){
-        forrige = denne;
-        denne = denne->neste;
-    }
-    if(denne){
-        if(forrige) forrige->neste=denne->neste;
-        else l->hode = denne->neste;
-        l->antElementer--;
-        return denne;
-    }
-    else return NULL;
-}
-Node* finnNr(EnkelLenke* l, int nr){
-    if(nr<l->antElementer){
-        Node*denne = l->hode;
-        for(int i=0;i<nr;++i)denne=denne->neste;
-        return denne;        
-    }
-    else return NULL;
-}
-void slettAlle(EnkelLenke* l){
-    if(l->hode){
-        Node* denne = l->hode;
-        while (denne->neste){
-            l->hode = denne->neste;
-            free(denne);
-            denne = l->hode;
-        }
-        free(denne);
-        l->hode=NULL;
-        l->antElementer=0;
-    }
-}
-
-int main(){
-    int num_soldiers = 10;
-    int kill = 3;
-    std::cout<<"Made variables"<<std::endl;
-    EnkelLenke* soldiers;
-    std::cout<<"Made list"<<std::endl;
-    for (double i = 0; i < num_soldiers; i++)
+    for (size_t i = 0; i < size; i++)
     {
-        settInnBakerst(soldiers,i);
-        std::cout<<"Insert: " << i << std::endl;
-    }    
+        if (i > 0)
+        {
+            node = newNode(size - i + 1);
+            node->next = nextNode;
+            nextNode = node;
+        }
+        else
+        {
+            head = newNode(1);
+            head->next = head;
+            nextNode = head;
+        }
+    }
+    head->next = node;
+    return head;
+}
+
+void deleteNode(Node *kill)
+{
+    Node *prev = NULL;
+    Node *temp = kill;
+    while (kill->next != temp)
+    {
+        kill = kill->next;
+    }
+    prev = kill;
+    prev->next = temp->next;
+    //delete(kill);
+}
+
+void printList(Node *head)
+{
+    Node *end = head;
+    std::cout << "Print List:" << std::endl;
+    do
+    {
+        std::cout << head->data << " ";
+        head = head->next;
+    } while (head != end);
+    std::cout << std::endl;
+}
+
+int josephusCircle(Node *head, int skip)
+{
+    if (head == head->next)
+    {
+        std::cout << "Return: " << head->data << std::endl;
+        return head->data;
+    }
+    else
+    {
+        for (size_t i = 1; i < skip; i++)
+        {
+            head = head->next;
+        }
+        Node *kill = head;
+        head = kill->next;
+        std::cout << "Kill: " << kill->data << "\n";
+        deleteNode(kill);
+        //printList(head);
+        return josephusCircle(head, skip);
+    }
+}
+
+int main()
+{
+    int num_soldiers = 40;
+    int skip = 3;
+    int killSoldier = skip;
+    Node *list = createList(num_soldiers);
+
+    printList(list);
+    int survivor = josephusCircle(list, skip);
+    std::cout << "Survivor: " << survivor << std::endl;
+
     return 0;
 }

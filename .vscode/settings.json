@@ -48,6 +48,8 @@
         "array": "cpp",
         "string_view": "cpp",
         "ctime": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "deque": "cpp",
+        "stack": "cpp"
     }
 }
