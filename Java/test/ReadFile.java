@@ -2,14 +2,21 @@ package Java.test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class ReadFile {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         System.out.println();
-        String file_name = "Java\\test\\ReadFile.txt";
 
+        //File Stuff
+        String file_name = "Java\\test\\ReadFile.txt";
         File file = new File(file_name);
+        FileWriter writer = new FileWriter(file);
+        writer.write("Hei fra kode");
+        writer.close();
+
         Scanner sc = new Scanner(file);
 
         // Oppgave variabler
@@ -25,6 +32,7 @@ public class ReadFile {
         }
         System.out.println("There are " + num_chars[14] + " o's in the file");
         sc.close();
+
 
     }
 
