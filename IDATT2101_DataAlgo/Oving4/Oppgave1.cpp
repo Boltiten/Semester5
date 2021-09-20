@@ -89,8 +89,8 @@ int josephusCircle(Node *head, int skip)
 
 int main()
 {
-    int num_soldiers = 40;
-    int skip = 3;
+    int num_soldiers = 10;
+    int skip = 4;
     int killSoldier = skip;
     Node *list = createList(num_soldiers);
 
