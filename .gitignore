@@ -13,3 +13,4 @@ IDATT2502_AI/Oving3/a/data/MNIST/raw/train-labels-idx1-ubyte
 IDATT2502_AI/Oving3/a/data/MNIST/raw/train-images-idx3-ubyte
 IDATT2502_AI/Oving3/a/data/MNIST/raw/t10k-labels-idx1-ubyte
 IDATT2502_AI/Oving3/a/data/MNIST/raw/t10k-images-idx3-ubyte
+*.exe

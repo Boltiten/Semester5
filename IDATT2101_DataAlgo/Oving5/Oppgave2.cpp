@@ -18,15 +18,14 @@
 #include <algorithm>
 
 //stuff
-const int arrSize = 10;
-const int hashTableSize = 11;
+const int arrSize = 10000000;
 int collisions[3] = {0,0,0};
 void PrintLine();
 void swap(int *a, int *b);
 void printArray(int arr[], int n);
 void randomize(int arr[], int n);
 
-template <typename K, typename V>
+template <class K, class V>
 
 class HashNode
 {
@@ -41,9 +40,10 @@ public:
     }
 };
 
-template <typename K, typename V>
+template <class K, class V>
 class HashMap
 {
+protected:
     HashNode<K,V>** arr;
     int capacity;
     int size;
@@ -52,7 +52,7 @@ class HashMap
 public:
     explicit HashMap()
     {
-        capacity = 20;
+        capacity = 16777216;
         size = 0;
         arr = new HashNode<K,V>*[capacity];
 
@@ -74,157 +74,216 @@ public:
     int sizeofMap(){
         return size;
     }
-
+    void display()
+    {
+        for (int i = 0; i < this->capacity; i++) {
+            if (this->arr[i] != NULL && this->arr[i]->key != -1)
+                std::cout << "key = " << this->arr[i]->key
+                     << "  value = "
+                     << this->arr[i]->value << std::endl;
+        }
+    }
+    
 };
 
-template <typename K, typename V>
-class HashLinear : public HashMap 
+template <class K, class V>
+class HashLinear :  public HashMap <K,V>
 {
-    
+    using HashMap<K,V>::HashMap;
 public:
-    using HashMap::HashMap;
+    using HashMap<K,V>::display;
     void insert(K key, V value)
     {
         HashNode<K,V>* temp = new HashNode<K,V>(key, value);
-        int hashIndex = hashCode(key);
+        int hashIndex = this->hashCode(key);
+        int i = 0;
         
         //collision
-        while(arr[hashIndex] != NULL)
+        while(this->arr[hashIndex] != NULL)
         {
             //linear
             collisions[0]++;
-            hashIndex++;
-            hashIndex%=capacity;
+            i++;
+            hashIndex += i;
+            hashIndex%=this->capacity;
 
             //her kan jeg finne forskjellige metoder å legge inn på, kanskje en id om hvilken hash vi skal bruke.
         }
-        if(arr[hashIndex] == NULL)
+        if(this->arr[hashIndex] == NULL)
         {
-            size++;
-            arr[hashIndex] = temp;
+            this->size++;
+            this->arr[hashIndex] = temp;
         }
     }
 
-    V delete(int key)
+    V deleteNode(int key)
     {
-        int hashIndex = hashCode(key);
+        int hashIndex = this->hashCode(key);
 
-        while (arr[hashIndex] != NULL)
+        while (this->arr[hashIndex] != NULL)
         {
-            if(arr[hashIndex]->key==key)
+            if(this->arr[hashIndex]->key==key)
             {
-                HashNode<K,V>* temp = arr[hashIndex];
+                HashNode<K,V>* temp = this->arr[hashIndex];
 
-                arr[hashIndex] = dummy;
+                this->arr[hashIndex] = this->dummy;
 
-                size--;
+                this->size--;
                 return temp->value;
             }
             hashIndex++;
-            hashindex%=capacity;
+            hashIndex%=this->capacity;
         }
         return NULL;
     }
     V get(int key)
     {
-        int hashIndex = hashCode(key);
+        int hashIndex = this->hashCode(key);
         int counter = 0;
 
-        while(arr[hashIndex] != NULL){
-            if(counter++ > capacity) return NULL;
-            if(arr[hashIndex->key==key])return arr[hashIndex]->value;
-            hashindex++;
-            hashIndex %= capacity;
+        while(this->arr[hashIndex] != NULL){
+            if(counter++ > this->capacity) return NULL;
+            if(this->arr[hashIndex]->key==key)return this->arr[hashIndex]->value;
+            hashIndex++;
+            hashIndex %= this->capacity;
         }
         return NULL;
     }
+    
 };
 
-template <typename K, typename V>
-class HashQuadratic : public HashMap
+
+template <class K, class V>
+class HashQuadratic :  public HashMap <K,V>
 {
+    using HashMap<K,V>::HashMap;
 public:
+    using HashMap<K,V>::display;
     void insert(K key, V value)
     {
         HashNode<K,V>* temp = new HashNode<K,V>(key, value);
-        int hashIndex = hashCode(key);
+        int hashIndex = this->hashCode(key);
+        int i=0;
         
         //collision
-        while(arr[hashIndex] != NULL)
+        while(this->arr[hashIndex] != NULL)
         {
             //linear
             collisions[1]++;
-            hashIndex++;
-            hashIndex%=capacity;
+            i++;
+            hashIndex+= i*i;
+            hashIndex%=this->capacity;
 
             //her kan jeg finne forskjellige metoder å legge inn på, kanskje en id om hvilken hash vi skal bruke.
         }
-        if(arr[hashIndex] == NULL)
+        if(this->arr[hashIndex] == NULL)
         {
-            size++;
-            arr[hashIndex] = temp;
+            this->size++;
+            this->arr[hashIndex] = temp;
         }
     }
 
-    V delete(int key)
+    V deleteNode(int key)
     {
-        int hashIndex = hashCode(key);
+        int hashIndex = this->hashCode(key);
 
-        while (arr[hashIndex] != NULL)
+        while (this->arr[hashIndex] != NULL)
         {
-            if(arr[hashIndex]->key==key)
+            if(this->arr[hashIndex]->key==key)
             {
-                HashNode<K,V>* temp = arr[hashIndex];
+                HashNode<K,V>* temp = this->arr[hashIndex];
 
-                arr[hashIndex] = dummy;
+                this->arr[hashIndex] = this->dummy;
 
-                size--;
+                this->size--;
                 return temp->value;
             }
             hashIndex++;
-            hashindex%=capacity;
+            hashIndex%=this->capacity;
         }
         return NULL;
     }
     V get(int key)
     {
-        int hashIndex = hashCode(key);
+        int hashIndex = this->hashCode(key);
         int counter = 0;
 
-        while(arr[hashIndex] != NULL){
-            if(counter++ > capacity) return NULL;
-            if(arr[hashIndex->key==key])return arr[hashIndex]->value;
-            hashindex++;
-            hashIndex %= capacity;
+        while(this->arr[hashIndex] != NULL){
+            if(counter++ > this->capacity) return NULL;
+            if(this->arr[hashIndex]->key==key)return this->arr[hashIndex]->value;
+            hashIndex++;
+            hashIndex %= this->capacity;
         }
         return NULL;
     }
+    
 };
 
-
-
-int hashLinear(){
-    //hi(X) = (hash(X)+i)%HashTableSize
-    //kjør en while som sjekker om table[index] = NULL, og inkrementerer i når det er noe der.
-    //plasser element i posisjon en index havner på.
-    //ved collision inkrementerer vi collisions[0];
-    /*
-    int index = (key%HashTableSize); 
-    int i = 1;
-    
-    while(hash[index] != null)
+template <class K, class V>
+class HashDouble :  public HashMap <K,V>
+{
+    using HashMap<K,V>::HashMap;
+public:
+    using HashMap<K,V>::display;
+    void insert(K key, V value)
     {
-        i++;
-        collisions[0]++;
-        index = (key+i)%HashTableSize;
+        HashNode<K,V>* temp = new HashNode<K,V>(key, value);
+        int hashIndex = this->hashCode(key);
+        int i=0;
+        
+        //collision
+        while(this->arr[hashIndex] != NULL)
+        {
+            //Double hashing 
+            collisions[2]++;
+            i++;
+            hashIndex;
+            hashIndex%=this->capacity;
+
+            //her kan jeg finne forskjellige metoder å legge inn på, kanskje en id om hvilken hash vi skal bruke.
+        }
+        if(this->arr[hashIndex] == NULL)
+        {
+            this->size++;
+            this->arr[hashIndex] = temp;
+        }
     }
 
-    */
+    V deleteNode(int key)
+    {
+        int hashIndex = this->hashCode(key);
 
-    return 0; //return index;
+        while (this->arr[hashIndex] != NULL)
+        {
+            if(this->arr[hashIndex]->key==key)
+            {
+                HashNode<K,V>* temp = this->arr[hashIndex];
 
+                this->arr[hashIndex] = this->dummy;
 
-}
+                this->size--;
+                return temp->value;
+            }
+            hashIndex++;
+            hashIndex%=this->capacity;
+        }
+        return NULL;
+    }
+    V get(int key)
+    {
+        int hashIndex = this->hashCode(key);
+        int counter = 0;
+
+        while(this->arr[hashIndex] != NULL){
+            if(counter++ > this->capacity) return NULL;
+            if(this->arr[hashIndex]->key==key)return this->arr[hashIndex]->value;
+            hashIndex++;
+            hashIndex %= this->capacity;
+        }
+        return NULL;
+    }
+    
+};
 int hashQuadratic(){
     //hi(X) = (hash(X)+i^2)%HashTableSilze - ez utvikling fra linear
     //ved collision inkrementerer vi collisions[1];
@@ -282,21 +341,24 @@ int main(){
      * */
 
     //Opprett hashtabeller
-    HashLinear h1;
+    
+    HashLinear<int, int> h1;
+    HashQuadratic<int, int> h2;
     
 
     for (size_t i = 0; i < arrSize; i++)
     {
-        //send tabellene over til insert, og hash riktig.
+        h1.insert(numbers[i],numbers[i]);
+        h2.insert(numbers[i],numbers[i]);
     }
 
     //Print antall kollisjoner
-    /* 
+     
     for (size_t i = 0; i < 3; i++)
     {
         std::cout<<"Collisions type "<< i+1 << " had: "<<collisions[i]<<" collisions."<<std::endl;
-    } */
-    
+    }
+    //h1.display();
 
     free(numbers);
     return 0;
