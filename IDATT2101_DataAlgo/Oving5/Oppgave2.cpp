@@ -19,7 +19,8 @@
 
 //stuff
 const int arrSize = 10000000;
-int collisions[3] = {0,0,0};
+const int PRIME = 29;
+const int hashSize = 10000019;
 void PrintLine();
 void swap(int *a, int *b);
 void printArray(int arr[], int n);
@@ -47,13 +48,15 @@ protected:
     HashNode<K,V>** arr;
     int capacity;
     int size;
+    int collisions;
     HashNode<K,V>* dummy;
 
 public:
-    explicit HashMap()
+    explicit HashMap(int cap)
     {
-        capacity = 16777216;
+        capacity = cap;
         size = 0;
+        collisions = 0;
         arr = new HashNode<K,V>*[capacity];
 
         for (size_t i = 0; i < capacity; i++)
@@ -74,6 +77,12 @@ public:
     int sizeofMap(){
         return size;
     }
+    int getCollisions(){
+        return collisions;
+    }
+    void zeroCollisions(){
+        collisions = 0;
+    }
     void display()
     {
         for (int i = 0; i < this->capacity; i++) {
@@ -91,7 +100,6 @@ class HashLinear :  public HashMap <K,V>
 {
     using HashMap<K,V>::HashMap;
 public:
-    using HashMap<K,V>::display;
     void insert(K key, V value)
     {
         HashNode<K,V>* temp = new HashNode<K,V>(key, value);
@@ -99,10 +107,11 @@ public:
         int i = 0;
         
         //collision
-        while(this->arr[hashIndex] != NULL)
+        while(this->arr[hashIndex] != NULL
+                && this->arr[hashIndex]->key !=-1)
         {
             //linear
-            collisions[0]++;
+            this->collisions++;
             i++;
             hashIndex += i;
             hashIndex%=this->capacity;
@@ -116,9 +125,10 @@ public:
         }
     }
 
-    V deleteNode(int key)
+    void deleteNode(int key)
     {
         int hashIndex = this->hashCode(key);
+        int i = 0;
 
         while (this->arr[hashIndex] != NULL)
         {
@@ -129,22 +139,24 @@ public:
                 this->arr[hashIndex] = this->dummy;
 
                 this->size--;
-                return temp->value;
+                return;
             }
-            hashIndex++;
+            i++;
+            hashIndex += i;
             hashIndex%=this->capacity;
         }
-        return NULL;
     }
     V get(int key)
     {
         int hashIndex = this->hashCode(key);
         int counter = 0;
+        int i = 0;
 
         while(this->arr[hashIndex] != NULL){
             if(counter++ > this->capacity) return NULL;
             if(this->arr[hashIndex]->key==key)return this->arr[hashIndex]->value;
-            hashIndex++;
+            i++;
+            hashIndex += i;
             hashIndex %= this->capacity;
         }
         return NULL;
@@ -152,13 +164,11 @@ public:
     
 };
 
-
 template <class K, class V>
 class HashQuadratic :  public HashMap <K,V>
 {
     using HashMap<K,V>::HashMap;
 public:
-    using HashMap<K,V>::display;
     void insert(K key, V value)
     {
         HashNode<K,V>* temp = new HashNode<K,V>(key, value);
@@ -166,10 +176,11 @@ public:
         int i=0;
         
         //collision
-        while(this->arr[hashIndex] != NULL)
+        while(this->arr[hashIndex] != NULL
+                && this->arr[hashIndex]->key !=-1)
         {
             //linear
-            collisions[1]++;
+            this->collisions++;
             i++;
             hashIndex+= i*i;
             hashIndex%=this->capacity;
@@ -183,9 +194,10 @@ public:
         }
     }
 
-    V deleteNode(int key)
+    void deleteNode(int key)
     {
         int hashIndex = this->hashCode(key);
+        int i = 0;
 
         while (this->arr[hashIndex] != NULL)
         {
@@ -196,22 +208,24 @@ public:
                 this->arr[hashIndex] = this->dummy;
 
                 this->size--;
-                return temp->value;
+                return;
             }
-            hashIndex++;
+            i++;
+            hashIndex+= i*i;
             hashIndex%=this->capacity;
         }
-        return NULL;
     }
     V get(int key)
     {
         int hashIndex = this->hashCode(key);
         int counter = 0;
+        int i = 0;
 
         while(this->arr[hashIndex] != NULL){
             if(counter++ > this->capacity) return NULL;
             if(this->arr[hashIndex]->key==key)return this->arr[hashIndex]->value;
-            hashIndex++;
+            i++;
+            hashIndex+= i*i;
             hashIndex %= this->capacity;
         }
         return NULL;
@@ -224,21 +238,26 @@ class HashDouble :  public HashMap <K,V>
 {
     using HashMap<K,V>::HashMap;
 public:
-    using HashMap<K,V>::display;
     void insert(K key, V value)
     {
         HashNode<K,V>* temp = new HashNode<K,V>(key, value);
         int hashIndex = this->hashCode(key);
+        int hashIndex2 = (key%PRIME)+1;
         int i=0;
         
         //collision
-        while(this->arr[hashIndex] != NULL)
+        while(this->arr[hashIndex] != NULL
+                && this->arr[hashIndex]->key !=-1)
         {
             //Double hashing 
-            collisions[2]++;
+            this->collisions++;
             i++;
-            hashIndex;
+            int newIndex = (hashIndex+i*hashIndex2);
             hashIndex%=this->capacity;
+            if(this->arr[newIndex] == NULL){
+                hashIndex = newIndex;
+                break;
+            }
 
             //her kan jeg finne forskjellige metoder å legge inn på, kanskje en id om hvilken hash vi skal bruke.
         }
@@ -249,9 +268,11 @@ public:
         }
     }
 
-    V deleteNode(int key)
+    void deleteNode(int key)
     {
         int hashIndex = this->hashCode(key);
+        int hashIndex2 = (key%PRIME)+1;
+        int i=0;
 
         while (this->arr[hashIndex] != NULL)
         {
@@ -262,72 +283,45 @@ public:
                 this->arr[hashIndex] = this->dummy;
 
                 this->size--;
-                return temp->value;
+                return;
             }
-            hashIndex++;
+            i++;
+            int newIndex = (hashIndex+i*hashIndex2);
             hashIndex%=this->capacity;
+            if(this->arr[newIndex] == NULL){
+                hashIndex = newIndex;
+            }
         }
-        return NULL;
     }
     V get(int key)
     {
         int hashIndex = this->hashCode(key);
         int counter = 0;
+        int hashIndex2 = (key%PRIME)+1;
+        int i=0;
 
         while(this->arr[hashIndex] != NULL){
             if(counter++ > this->capacity) return NULL;
             if(this->arr[hashIndex]->key==key)return this->arr[hashIndex]->value;
-            hashIndex++;
-            hashIndex %= this->capacity;
+            i++;
+            int newIndex = (hashIndex+i*hashIndex2);
+            hashIndex%=this->capacity;
+            if(this->arr[newIndex] == NULL){
+                hashIndex = newIndex;
+            }
         }
         return NULL;
     }
     
 };
-int hashQuadratic(){
-    //hi(X) = (hash(X)+i^2)%HashTableSilze - ez utvikling fra linear
-    //ved collision inkrementerer vi collisions[1];
-    /*
-    int index = (key%HashTableSize); 
-    int i = 1;
-    
-    while(hash[index] != null)
-    {
-        i++;
-        collisions[0]++;
-        index = (key+i*i)%HashTableSize;
-    }
-
-    */
-
-    return 0; //return index;
-}
-int hashDouble(){
-    //hi(X) = (Hash(X) +i*Hash2(X))%HashTableSize
-    //ved collision inkrementerer vi collisions[2];
-    /*
-    int index = (key%HashTableSize); 
-    int i = 1;
-    
-    while(hash[index] != null)
-    {
-        i++;
-        collisions[0]++;
-        index = ((key%HashTableSize)+i*(key%HashTableSize))%HashTableSize;
-    }
-
-    */
-
-    return 0; //return index;
-}
 
 int main(){
-    
+    srand(time(NULL));
     int *numbers = (int*)malloc(arrSize*sizeof(int));
-    numbers[0] = rand()%1000 +1;
+    numbers[0] = rand()%100 +1;
     for (size_t i = 1; i < arrSize; i++)
     {
-        numbers[i] = numbers[i-1] + rand()%10 + 1;
+        numbers[i] = numbers[i-1] + rand()%100 + 1;
     }
     //shuffel funksjon jeg fant på internett.
     //randomize(numbers, arrSize);
@@ -342,23 +336,96 @@ int main(){
 
     //Opprett hashtabeller
     
-    HashLinear<int, int> h1;
-    HashQuadratic<int, int> h2;
-    
+    HashLinear<int, int> h1 = HashLinear<int, int>(hashSize);
+    HashQuadratic<int, int> h2 = HashQuadratic<int, int>(hashSize);
+    HashDouble<int, int> h3 = HashDouble<int, int>(hashSize);    
 
-    for (size_t i = 0; i < arrSize; i++)
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize/2; i++)
     {
         h1.insert(numbers[i],numbers[i]);
+    }
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på linear 50%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize/2; i++)
+    {
         h2.insert(numbers[i],numbers[i]);
     }
-
-    //Print antall kollisjoner
-     
-    for (size_t i = 0; i < 3; i++)
+    end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på qudratic 50%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize/2; i++)
     {
-        std::cout<<"Collisions type "<< i+1 << " had: "<<collisions[i]<<" collisions."<<std::endl;
+        h3.insert(numbers[i],numbers[i]);
     }
-    //h1.display();
+    end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på double 50%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    //Print antall kollisjoner
+    std::cout<<"Collisions type: linear 50%,      had: "<<h1.getCollisions()<<" collisions."<<std::endl; 
+    std::cout<<"Collisions type: quadratic 50%,   had: "<<h2.getCollisions()<<" collisions."<<std::endl; 
+    std::cout<<"Collisions type: double hash 50%, had: "<<h3.getCollisions()<<" collisions."<<std::endl;
+    
+    HashLinear<int, int> h4 = HashLinear<int, int>(hashSize);
+    HashQuadratic<int, int> h5 = HashQuadratic<int, int>(hashSize);
+    HashDouble<int, int> h6 = HashDouble<int, int>(hashSize);
+
+    begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize*0.9; i++)
+    {
+        h4.insert(numbers[i],numbers[i]);
+    }
+    end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på linear 90%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize*0.9; i++)
+    {
+        h5.insert(numbers[i],numbers[i]);
+    }
+    end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på qudratic 90%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize*0.9; i++)
+    {
+        h6.insert(numbers[i],numbers[i]);
+    }
+    end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på double 90%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    //Print antall kollisjoner
+    std::cout<<"Collisions type: linear 90%,      had: "<<h4.getCollisions()<<" collisions."<<std::endl; 
+    std::cout<<"Collisions type: quadratic 90%,   had: "<<h5.getCollisions()<<" collisions."<<std::endl; 
+    std::cout<<"Collisions type: double hash 90%, had: "<<h6.getCollisions()<<" collisions."<<std::endl;
+
+
+    HashLinear<int, int> h7 = HashLinear<int, int>(hashSize);
+    HashQuadratic<int, int> h8 = HashQuadratic<int, int>(hashSize);
+    HashDouble<int, int> h9 = HashDouble<int, int>(hashSize);
+
+    begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize*0.99; i++)
+    {
+        h7.insert(numbers[i],numbers[i]);
+    }
+    end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på linear 99%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize*0.99; i++)
+    {
+        h8.insert(numbers[i],numbers[i]);
+    }
+    end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på qudratic 99%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    begin = std::chrono::steady_clock::now();
+    for (size_t i = 0; i < arrSize*0.99; i++)
+    {
+        h9.insert(numbers[i],numbers[i]);
+    }
+    end = std::chrono::steady_clock::now();
+    std::cout << "Tid brukt på double 99%: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+    //Print antall kollisjoner
+    std::cout<<"Collisions type: linear 99%,      had: "<<h7.getCollisions()<<" collisions."<<std::endl; 
+    std::cout<<"Collisions type: quadratic 99%,   had: "<<h8.getCollisions()<<" collisions."<<std::endl; 
+    std::cout<<"Collisions type: double hash 99%, had: "<<h9.getCollisions()<<" collisions."<<std::endl;
 
     free(numbers);
     return 0;
