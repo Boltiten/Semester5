@@ -4,9 +4,7 @@
 #include <string>
 
 class Graph
-{
-    
-    
+{   
 public:
     std::vector<bool> visited;
     std::vector<std::vector<int>> graph;
@@ -46,15 +44,25 @@ int main()
 {
 
     //finn størrelsen...
-    Graph g;
-    g.visited.assign(50,false);
-    g.graph.assign(50, std::vector<int>());
-
-    std::string filename = "tall.txt";
+    std::string filename = "L7g1.txt";
     std::fstream f(filename, std::ios::in);
     int inputNumber;
     int i = 0;
     int temp = 0;
+    
+    Graph g;
+    if(f.is_open())
+    {
+        f>>inputNumber;
+    } 
+    else 
+    {
+        std::cout<<"Can't open file by name: "<<filename<<std::endl;
+        return 1;
+    }
+    g.visited.assign(inputNumber,false);
+    g.graph.assign(inputNumber, std::vector<int>());
+    f>>inputNumber; //skipper tallet om antall kanter..
 
     if(f.is_open())
     {
@@ -68,12 +76,12 @@ int main()
             else
             {
                 g.addEdge(temp, inputNumber);
-                std::cout<<"Added: "<<temp<<" "<<inputNumber<<std::endl;
+                //std::cout<<"Added: "<<temp<<" "<<inputNumber<<std::endl;
             }
         }
     }
     
-    g.bfs(1);
+    g.bfs(2);
 
     f.close();
 
