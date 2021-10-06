@@ -1,74 +1,88 @@
-/*
-Bredde-først søk
-Implementer bredde-først søk (BFS). Programmet må kunne lese inn grafer fra fil, formatet for
-en graf uten vekter er slik:
-
-Formatet spesifiserer en rettet graf. For å få en
-urettet graf oppgis hver kant to ganger, en for
-hver retning.
-
-*/
-
 #include <iostream>
-#include <vector>
+#include <list>
 #include <string>
-#include <stdlib.h>
 #include <fstream>
 
-void printVectorInVector(std::vector<std::vector<int>> e);
+class Graph
+{
+    int vertices;
+    std::list<int> *adjecents;
 
-//Forsøk 1
-class Graph {
 public:
-    Graph(std::vector<int> &v, std::vector<std::vector<int>> &e):v_(v), e_(e){}
-    bool IsEulerWalkable()
+    Graph(int vertices)
     {
-        std::vector<int> degrees(v_.size());
-        return true;
-    };
-    std::vector<int> v_;
-    std::vector<std::vector<int>> e_;
+        this->vertices = vertices;
+        adjecents = new std::list<int>[vertices];
+    }
+
+    void addEdge(int vertex, int destination)
+    {
+        adjecents[vertex].push_back(destination);
+    }
+    void bfs(int start)
+    {
+        //sett alle veier til "ikke traversert"
+        bool *visited = new bool[vertices];
+        for (size_t i = 0; i < vertices; i++)
+        {
+            visited[i] = false;
+        }
+
+        std::list<int> queue;
+        visited[start] = true;
+        queue.push_back(start);
+
+        std::list<int>::iterator i;
+
+        while(!queue.empty())
+        {
+            start = queue.front();
+            std::cout<<start<<" ";
+            queue.pop_front();
+
+            for (i = adjecents[start].begin(); i != adjecents[start].end(); ++i)
+            {
+                if(!visited[*i])
+                {
+                    visited[*i] = true;
+                    queue.push_back(*i);
+                }
+            }
+            
+        }        
+    }
 };
 
 
-int main(){
+int main ()
+{
+
     std::string filename = "tall.txt";
     std::fstream f(filename, std::ios::in);
-    int inputNumbers;
-    std::vector<int> v;
-    std::vector<std::vector<int>> e;
+    int inputNumber;
     int i = 0;
+    int temp = 0;
 
+    Graph g(50);
     if(f.is_open())
     {
-        while(f >> inputNumbers)
+        while(f >> inputNumber)
         {
             i++;
-            v.push_back(inputNumbers);
-            if(i%2==0)
+            if(!((i%2)==0))
             {
-                e.push_back(v);
-                v.clear();
+                temp = inputNumber;
+            }
+            else
+            {
+                g.addEdge(temp, inputNumber);
+                std::cout<<"Added: "<<temp<<" "<<inputNumber<<std::endl;
             }
         }
     }
-    Graph g(v,e);
-
-    printVectorInVector(e);
+    
+    g.bfs(7);
 
     f.close();
     return 0;
-}
-
-void printVectorInVector(std::vector<std::vector<int>> e){
-    for (auto v : e)
-    {
-        for (auto i : v)
-        {
-            std::cout<<i<<" ";
-        }
-        std::cout<<std::endl;
-        
-    }
-    
 }
