@@ -60,11 +60,6 @@ public:
 
         for (int i = 0; i < visited.size(); i++)
         {
-            visited[i] = false;
-        }
-
-        for (int i = 0; i < visited.size(); i++)
-        {
             if (visited[i] == false)
             {
                 topologicalSortUtil(i, Stack);
@@ -74,7 +69,7 @@ public:
 
         while (Stack.empty() == false)
         {
-            std::cout << Stack.top() << " ";
+            //std::cout << Stack.top() << " ";
             Stack.pop();
         }
     }
@@ -87,22 +82,24 @@ int main()
     std::string filename = "L7Skandinavia.txt";
     std::fstream f(filename, std::ios::in);
     int inputNumber;
+    int vertexes, edges;
     int i = 0;
     int temp = 0;
 
-    Graph *g = (Graph*)malloc(100000000*sizeof(Graph));
+    Graph g;
     if (f.is_open())
     {
-        f >> inputNumber;
+        f >> vertexes;
+        f >> edges;
     }
     else
     {
         std::cout << "Can't open file by name: " << filename << std::endl;
         return 1;
     }
-    g->visited.assign(inputNumber, false);
-    g->graph.assign(inputNumber, std::vector<int>());
-    f >> inputNumber; //skipper tallet om antall kanter..
+    g.visited.assign(vertexes, false);
+    g.graph.assign(edges, std::vector<int>());
+    std::cout<<"Assign ferdig"<<std::endl;
     if (f.is_open())
     {
         while (f >> inputNumber)
@@ -114,15 +111,14 @@ int main()
             }
             else
             {
-                g->addEdge(temp, inputNumber);
+                g.addEdge(temp, inputNumber);
                 //std::cout << "Added: " << temp << " " << inputNumber << std::endl;
             }
         }
     }
-
-    g->topologicalSort();
-
+    std::cout<<"Ferdig å legge til tall"<<std::endl;
+    g.topologicalSort();
+    std::cout<<"Sort ferdig"<<std::endl;
     f.close();
-    free(g);
     return 0;
 }
