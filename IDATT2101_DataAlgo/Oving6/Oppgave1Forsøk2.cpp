@@ -1,35 +1,46 @@
 #include <iostream>
-#include <vector>
-#include <fstream>
+#include <list>
 #include <string>
+#include <fstream>
 
 class Graph
 {
-    
-    
+    int vertices;
+    std::list<int> *adjecents;
+
 public:
-    std::vector<bool> visited;
-    std::vector<std::vector<int>> graph;
+    Graph(int vertices)
+    {
+        this->vertices = vertices;
+        adjecents = new std::list<int>[vertices];
+    }
+
     void addEdge(int vertex, int destination)
     {
-        graph[vertex].push_back(destination);
+        adjecents[vertex].push_back(destination);
     }
     void bfs(int start)
     {
         //sett alle veier til "ikke traversert"
-        std::vector<int> queue;
+        bool *visited = new bool[vertices];
+        for (size_t i = 0; i < vertices; i++)
+        {
+            visited[i] = false;
+        }
+
+        std::list<int> queue;
         visited[start] = true;
         queue.push_back(start);
 
-        std::vector<int>::iterator i;
+        std::list<int>::iterator i;
 
         while(!queue.empty())
         {
             start = queue.front();
             std::cout<<start<<" ";
-            queue.erase(queue.begin());
+            queue.pop_front();
 
-            for (i = graph[start].begin(); i != graph[start].end(); ++i)
+            for (i = adjecents[start].begin(); i != adjecents[start].end(); ++i)
             {
                 if(!visited[*i])
                 {
@@ -38,17 +49,13 @@ public:
                 }
             }
             
-        }
+        }        
     }
 };
 
-int main()
-{
 
-    //finn størrelsen...
-    Graph g;
-    g.visited.assign(50,false);
-    g.graph.assign(50, std::vector<int>());
+int main ()
+{
 
     std::string filename = "tall.txt";
     std::fstream f(filename, std::ios::in);
@@ -56,6 +63,7 @@ int main()
     int i = 0;
     int temp = 0;
 
+    Graph g(50);
     if(f.is_open())
     {
         while(f >> inputNumber)
@@ -73,9 +81,8 @@ int main()
         }
     }
     
-    g.bfs(1);
+    g.bfs(7);
 
     f.close();
-
     return 0;
 }
