@@ -18,21 +18,23 @@ public:
         std::vector<int> queue;
         visited[start] = true;
         queue.push_back(start);
-
         std::vector<int>::iterator i;
 
         while(!queue.empty())
         {
             start = queue.front();
-            std::cout<<start<<" ";
+            //std::cout<<start<<" ";
+
             queue.erase(queue.begin());
 
             for (i = graph[start].begin(); i != graph[start].end(); ++i)
             {
+                    std::cout<<"i: "<<*i<<std::endl;
                 if(!visited[*i])
                 {
                     visited[*i] = true;
                     queue.push_back(*i);
+
                 }
             }
             
@@ -81,7 +83,7 @@ int main()
         }
     }
     
-    g.bfs(2);
+    g.bfs(5);
 
     f.close();
 
