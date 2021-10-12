@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <queue>
 
 class Graph
 {   
@@ -12,34 +13,47 @@ public:
     {
         graph[vertex].push_back(destination);
     }
-    void bfs(int start)
+    void bfs(int start, int nodes)
     {
         //sett alle veier til "ikke traversert"
-        std::vector<int> queue;
+        std::queue<int> queue;
         visited[start] = true;
-        queue.push_back(start);
-        std::vector<int>::iterator i;
+        queue.push(start);
+
+        int* dist = new int[nodes];
+        dist[start] = 0;
+        int* prev = new int[nodes];
+        prev[start] = start;
 
         while(!queue.empty())
         {
             start = queue.front();
-            //std::cout<<start<<" ";
+            std::cout<<start<<" ";
+            queue.pop();
 
-            queue.erase(queue.begin());
-
-            for (i = graph[start].begin(); i != graph[start].end(); ++i)
+            for (int i = 0; i < graph[start].size(); ++i)
             {
-                    std::cout<<"i: "<<*i<<std::endl;
-                if(!visited[*i])
-                {
-                    visited[*i] = true;
-                    queue.push_back(*i);
-
+                int b = graph[start][i];
+                if(!visited[b]){
+                    queue.push(b);
+                    dist[b] = dist[start]+1;
+                    prev[b] = start;
+                    visited[b] = true;
                 }
-            }
-            
+            }            
         }
+        std::cout<<std::endl;
+        std::cout<< "Nodes"<< "  "<< "Prev" << "  " << "Dist" <<std::endl;
+        for (size_t i = 0; i < nodes; i++)
+        {
+            if(visited[i]){
+                std::cout<<"  "<< i << "     " << prev[i] << "     " << dist[i] <<std::endl;
+            }
+        }
+        
+        
     }
+    
 };
 
 int main()
@@ -49,22 +63,23 @@ int main()
     std::string filename = "L7g1.txt";
     std::fstream f(filename, std::ios::in);
     int inputNumber;
+    int vertexes, edges;
     int i = 0;
     int temp = 0;
-    
+
     Graph g;
-    if(f.is_open())
+    if (f.is_open())
     {
-        f>>inputNumber;
-    } 
+        f >> vertexes;
+        f >> edges;
+    }
     else 
     {
         std::cout<<"Can't open file by name: "<<filename<<std::endl;
         return 1;
     }
-    g.visited.assign(inputNumber,false);
-    g.graph.assign(inputNumber, std::vector<int>());
-    f>>inputNumber; //skipper tallet om antall kanter..
+    g.visited.assign(edges,false);
+    g.graph.assign(edges, std::vector<int>());
 
     if(f.is_open())
     {
@@ -82,8 +97,7 @@ int main()
             }
         }
     }
-    
-    g.bfs(5);
+    g.bfs(5, vertexes);
 
     f.close();
 
