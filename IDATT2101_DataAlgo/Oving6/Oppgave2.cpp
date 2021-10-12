@@ -13,31 +13,6 @@ public:
     {
         graph[vertex].push_back(destination);
     }
-    void bfs(int start)
-    {
-        //sett alle veier til "ikke traversert"
-        std::vector<int> queue;
-        visited[start] = true;
-        queue.push_back(start);
-
-        std::vector<int>::iterator i;
-
-        while (!queue.empty())
-        {
-            start = queue.front();
-            std::cout << start << " ";
-            queue.erase(queue.begin());
-
-            for (i = graph[start].begin(); i != graph[start].end(); ++i)
-            {
-                if (!visited[*i])
-                {
-                    visited[*i] = true;
-                    queue.push_back(*i);
-                }
-            }
-        }
-    }
 
     void topologicalSortUtil(int start, std::stack<int> &Stack)
     {
@@ -69,9 +44,10 @@ public:
 
         while (Stack.empty() == false)
         {
-            //std::cout << Stack.top() << " ";
+            std::cout << Stack.top() << " ";
             Stack.pop();
         }
+        std::cout<<std::endl;
     }
 };
 
@@ -79,7 +55,7 @@ int main()
 {
 
     //finn størrelsen...
-    std::string filename = "L7Skandinavia.txt";
+    std::string filename = "L7g5.txt";
     std::fstream f(filename, std::ios::in);
     int inputNumber;
     int vertexes, edges;

@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <queue>
 
 class Graph
 {   
@@ -12,31 +13,47 @@ public:
     {
         graph[vertex].push_back(destination);
     }
-    void bfs(int start)
+    void bfs(int start, int nodes)
     {
         //sett alle veier til "ikke traversert"
-        std::vector<int> queue;
+        std::queue<int> queue;
         visited[start] = true;
-        queue.push_back(start);
+        queue.push(start);
 
-        std::vector<int>::iterator i;
-        int j = 0;
+        int* dist = new int[nodes];
+        dist[start] = 0;
+        int* prev = new int[nodes];
+        prev[start] = start;
+
         while(!queue.empty())
         {
             start = queue.front();
-            //std::cout<<start<<" ";
-            queue.erase(queue.begin());
+            std::cout<<start<<" ";
+            queue.pop();
 
-            for (i = graph[start].begin(); i != graph[start].end(); ++i)
+            for (int i = 0; i < graph[start].size(); ++i)
             {
-                if(!visited[*i])
-                {                    
-                    visited[*i] = true;
-                    queue.push_back(*i);
+                int b = graph[start][i];
+                if(!visited[b]){
+                    queue.push(b);
+                    dist[b] = dist[start]+1;
+                    prev[b] = start;
+                    visited[b] = true;
                 }
             }            
         }
+        std::cout<<std::endl;
+        std::cout<< "Nodes"<< "  "<< "Prev" << "  " << "Dist" <<std::endl;
+        for (size_t i = 0; i < nodes; i++)
+        {
+            if(visited[i]){
+                std::cout<<"  "<< i << "     " << prev[i] << "     " << dist[i] <<std::endl;
+            }
+        }
+        
+        
     }
+    
 };
 
 int main()
@@ -80,8 +97,7 @@ int main()
             }
         }
     }
-    
-    g.bfs(5);
+    g.bfs(5, vertexes);
 
     f.close();
 
