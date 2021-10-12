@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <functional>
 
 using namespace std;
 
@@ -104,9 +105,68 @@ public:
         for (auto &square_column : squares)
             square_column.resize(8);
     }
-    void printChessBoard()
+    
+
+    /// 8x8 squares occupied by 1 or 0 chess pieces
+    vector<vector<unique_ptr<Piece>>> squares;
+
+    /// Move a chess piece if it is a valid move.
+    /// Does not test for check or checkmate.
+    bool move_piece(const std::string &from, const std::string &to)
     {
-        cout << endl;
+        int from_x = from[0] - 'a';
+        int from_y = stoi(string() + from[1]) - 1;
+        int to_x = to[0] - 'a';
+        int to_y = stoi(string() + to[1]) - 1;
+
+        auto &piece_from = squares[from_x][from_y];
+        if (piece_from)
+        {
+            if (piece_from->valid_move(from_x, from_y, to_x, to_y))
+            {
+                auto &piece_to = squares[to_x][to_y];
+                if (piece_to)
+                {
+                    if (piece_from->color != piece_to->color)
+                    {
+                        if (print_take_piece) print_take_piece(piece_to->type(), from, to);
+                        if (auto king = dynamic_cast<King *>(piece_to.get())){
+                            if (print_game_lost) print_game_lost (king->color_string());
+                        }
+                    }
+                    else
+                    {
+                        // piece in the from square has the same color as the piece in the to square
+                        if (print_invalid_move) print_invalid_move(piece_from->type(), from, to);
+                        return false;
+                    }
+                }
+                piece_to = move(piece_from);
+                if (print_move) print_move(*piece_to, from, to);
+                return true;
+            }
+            else
+            {
+                if (print_invalid_move) print_invalid_move(piece_from->type(), from, to);
+                return false;
+            }
+        }
+        else
+        {
+            if(print_no_piece_at_space)print_no_piece_at_space(from);
+            return false;
+        }
+    }    
+    function<void(const Piece &piece, const std::string &from, const std::string &to)> print_move;
+    function<void(const std::string &color, const std::string &from, const std::string &to)> print_take_piece;
+    function<void(const std::string &color)> print_game_lost;    
+    function<void(const std::string &color, const std::string &from, const std::string &to)> print_invalid_move;
+    function<void(const std::string &from)> print_no_piece_at_space;
+
+
+    std::string printChessBoard()
+    {
+        std::string boardstate = "";
         cout << "Board state" << endl;
         vector<string> rows(8);
         int i = 0;
@@ -130,63 +190,14 @@ public:
 
         for (int i = rows.size() - 1; i >= 0; i--)
         {
-            cout << rows[i] << endl;
+            boardstate.append(rows[i]);
+            boardstate.append("\n");
         }
-        cout << endl;
+        return boardstate;
 
         //omsorter til rekker
     }
-
-    /// 8x8 squares occupied by 1 or 0 chess pieces
-    vector<vector<unique_ptr<Piece>>> squares;
-
-    /// Move a chess piece if it is a valid move.
-    /// Does not test for check or checkmate.
-    bool move_piece(const std::string &from, const std::string &to)
-    {
-        int from_x = from[0] - 'a';
-        int from_y = stoi(string() + from[1]) - 1;
-        int to_x = to[0] - 'a';
-        int to_y = stoi(string() + to[1]) - 1;
-
-        auto &piece_from = squares[from_x][from_y];
-        if (piece_from)
-        {
-            if (piece_from->valid_move(from_x, from_y, to_x, to_y))
-            {
-                cout << piece_from->type() << " is moving from " << from << " to " << to << endl;
-                auto &piece_to = squares[to_x][to_y];
-                if (piece_to)
-                {
-                    if (piece_from->color != piece_to->color)
-                    {
-                        cout << piece_to->type() << " is being removed from " << to << endl;
-                        if (auto king = dynamic_cast<King *>(piece_to.get()))
-                            cout << king->color_string() << " lost the game" << endl;
-                    }
-                    else
-                    {
-                        // piece in the from square has the same color as the piece in the to square
-                        cout << "can not move " << piece_from->type() << " from " << from << " to " << to << endl;
-                        return false;
-                    }
-                }
-                piece_to = move(piece_from);
-                printChessBoard();
-                return true;
-            }
-            else
-            {
-                cout << "can not move " << piece_from->type() << " from " << from << " to " << to << endl;
-                return false;
-            }
-        }
-        else
-        {
-            cout << "no piece at " << from << endl;
-            return false;
-        }
-    }
+    
 };
 
 class ChessBoardPrint
@@ -194,13 +205,30 @@ class ChessBoardPrint
 public:
     ChessBoardPrint(ChessBoard &board)
     {
-        
+        board.print_move = [&board](const ChessBoard::Piece &piece, const std::string &from, const std::string &to){
+            cout << piece.type() << " is moving from " << from << " to " << to << endl;
+            std::cout<<board.printChessBoard()<<std::endl;
+        };
+        board.print_take_piece = [&board](const std::string &color, const std::string &from, const std::string &to){
+            cout << color << " is being removed from " << to << endl;
+            std::cout<<board.printChessBoard()<<std::endl;
+        };
+        board.print_game_lost = [&board](const std::string &color){
+            cout << color << " lost the game" << endl;
+        };
+        board.print_invalid_move = [&board](const std::string &color, const std::string &from, const std::string &to){
+            cout << "can not move " << color << " from " << from << " to " << to << endl;
+        };
+        board.print_no_piece_at_space = [&board](const std::string &from){
+            cout << "no piece at " << from << endl;
+        };
     }
 };
 
 int main()
 {
     ChessBoard board;
+    ChessBoardPrint print(board);
 
     board.squares[4][0] = make_unique<ChessBoard::King>(ChessBoard::Color::WHITE);
     board.squares[1][0] = make_unique<ChessBoard::Knight>(ChessBoard::Color::WHITE);
