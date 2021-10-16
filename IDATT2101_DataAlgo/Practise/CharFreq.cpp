@@ -9,10 +9,12 @@ int main(){
     std::fstream f(text, std::ios::in);
     char c;
     int alphabet[28];
-    int totalInputs = 0;
+    double freq[28];
+    double totalInputs = 0.0;
     for (size_t i = 0; i < 29; i++)
     {
         alphabet[i] = 0;
+        freq[i] = 0.0;
     }    
 
     if (f.is_open())
@@ -26,19 +28,31 @@ int main(){
             if((int)c == 32)alphabet[26]++;
             //new line
             if((int)c == 10)alphabet[27]++;
-            totalInputs++;
         }
         f.close();
         
     }
-    std::cout<<totalInputs<<std::endl;
-    totalInputs = 0;
     for (size_t i = 0; i < 29; i++)
     {
-        //std::cout<<(char)(i+97)<<" appeared "<<alphabet[i]<<" times"<<std::endl;
+        if((i+97)<123) std::cout<<(char)(i+97)<<" appeared "<<alphabet[i]<<" times"<<std::endl;
+        else if((i+97)==123) std::cout<<"space appeared "<<alphabet[i]<<" times"<<std::endl;
+        else if((i+97)==124) std::cout<<"new line appeared "<<alphabet[i]<<" times"<<std::endl;
+        
         totalInputs += alphabet[i];
     }
-    std::cout<<totalInputs<<std::endl;
+    for (size_t i = 0; i < 29; i++)
+    {
+        freq[i] = alphabet[i]/totalInputs;
+    }
     
+    std::cout<<totalInputs<<" chars counted"<<std::endl;
+    for (size_t i = 0; i < 29; i++)
+    {
+        if((i+97)<123) std::cout<<(char)(i+97)<<" appeared with "<<freq[i]<<" frequency"<<std::endl;
+        else if((i+97)==123) std::cout<<"space appeared "<<freq[i]<<" frequency"<<std::endl;
+        else if((i+97)==124) std::cout<<"new line appeared "<<freq[i]<<" frequency"<<std::endl;
+        
+        totalInputs += alphabet[i];
+    }
     return 0;
 }
