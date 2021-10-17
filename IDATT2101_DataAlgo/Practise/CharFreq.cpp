@@ -5,7 +5,7 @@
 
 int main(){
 
-    std::string text = "_names.txt";
+    std::string text = "text.txt";
     std::fstream f(text, std::ios::in);
     char c;
     int alphabet[28];
