@@ -3,39 +3,46 @@
 #include <fstream>
 #include <vector>
 
-typedef struct Edge{
+void gotHere(std::string tag){
+    std::cout<<"Got here: " << tag<<std::endl;
+}
+
+typedef struct Edge
+{
     int weight;
     int destination;
-}edge;
-typedef struct Node{
+} Edge;
+typedef struct Node
+{
     int vertex;
-    std::vector<Edge> edges[];
-}Node;
+    std::vector<Edge> edgesV;
+} Node;
 
+Edge *newEdge(Node *n, int w, int d)
+{
+    
+    Edge *edge = (Edge *)malloc(sizeof(Edge));    
+    edge->weight = w;
+    edge->destination = d;
+    return edge;
+}
+Node *newNode(int v)
+{
+    Node *node = (Node *)malloc(sizeof(Node));
+    node->vertex = v;
+    node->edgesV.push_back(*newEdge(node, 11, 12));
+    return node;
+}
 class Graph
 {
-    Edge *newEdge(Node *n, int w, int d)
-    {
-        Edge *edge = (Edge*)malloc(sizeof(Edge));
-        edge->weight=w;
-        edge->destination=d;
-        return edge;
-        
-    }
-    Node *newNode(int v)
-    {
-        Node *node = (Node*)malloc(sizeof(Node));
-        node->vertex = v;
-        //????
-        //node->edges.push_back(newEdge(node, 10, 10));
-        return node;
-    }
 };
+
+
 
 int main()
 {
 
-    //finn størrelsen...
+    // finn størrelsen...
     std::string filename = "flytgraf1.txt";
     std::fstream f(filename, std::ios::in);
     int inputNumber;
@@ -48,25 +55,35 @@ int main()
         f >> vertexes;
         f >> edges;
     }
-    else 
+    else
     {
-        std::cout<<"Can't open file by name: "<<filename<<std::endl;
+        std::cout << "Can't open file by name: " << filename << std::endl;
         return 1;
     }
 
-    if(f.is_open())
+    if (f.is_open())
     {
-        while(f >> inputNumber)
+        while (f >> inputNumber)
         {
-            std::cout<<inputNumber<<" ";
+            //std::cout << inputNumber << " ";
             i++;
-            if(i==3)
+            if (i == 3)
             {
                 i = 0;
-                std::cout<<std::endl;
+                //std::cout << std::endl;
             }
         }
     }
+    Graph g;
+    Node *n = newNode(10);
+    gotHere("After Node");
+
+    for (auto e : n->edgesV)
+    {
+        std::cout<<"Edge weight: "<<e.weight<<std::endl;
+    }
+    
+
     f.close();
 
     return 0;
