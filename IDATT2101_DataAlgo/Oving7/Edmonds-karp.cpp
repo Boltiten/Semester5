@@ -5,12 +5,15 @@
 #include <iostream>
 #include <fstream>
 
+
 using namespace std;
-int c[10][10];
-int flowPassed[10][10];
-vector<int> g[10];
-int parList[10];
-int currentPathC[10];
+int c[20][20];
+int flowPassed[20][20];
+vector<int> g[20];
+int parList[20];
+int currentPathC[20];
+
+
 int bfs(int sNode, int eNode) // breadth first search
 {
    memset(parList, -1, sizeof(parList));
@@ -70,7 +73,7 @@ int main()
 {
    int nodCount, edCount;
    // finn størrelsen...
-   std::string filename = "flytgraf1.txt";
+   std::string filename = "flytgraf3.txt";
    std::fstream f(filename, std::ios::in);
    int inputNumber;
    int i = 0;
