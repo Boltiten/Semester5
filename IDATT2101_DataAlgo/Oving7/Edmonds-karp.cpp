@@ -73,9 +73,9 @@ int main()
 {
    int nodCount, edCount;
    // finn størrelsen...
-   std::string filename = "flytgraf3.txt";
+   std::string filename = "flytgraf1.txt";
    std::fstream f(filename, std::ios::in);
-   int inputNumber;
+   int from, to, cap;
    int i = 0;
    int temp = 0;
 
@@ -95,18 +95,14 @@ int main()
    
    if (f.is_open())
    {
-      while (f >> inputNumber)
+      while (f >> from >> to >> cap)
       {
-         // std::cout << inputNumber << " ";
-         int from, to, cap;
-         from = inputNumber;
-         f >> to;
-         f >> cap;
          c[from][to] = cap;
          g[from].push_back(to);
          g[to].push_back(from);
       }
    }
+   f.close();
    int maxFlow = edmondsKarp(source, sink);
    cout << endl
         << endl
