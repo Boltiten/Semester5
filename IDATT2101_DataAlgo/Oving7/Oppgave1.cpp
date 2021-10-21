@@ -60,9 +60,9 @@ int main()
 {
 
     //finn størrelsen...
-    std::string filename = "L7g1.txt";
+    std::string filename = "flytgraf1.txt";
     std::fstream f(filename, std::ios::in);
-    int from,to;
+    int from, to;
     int vertexes, edges;
     int i = 0;
     int temp = 0;
