@@ -4,20 +4,20 @@
 #include <vector>
 #include <queue>
 
-using namespace std;
 int INF = 100000000;
 
-int c[20][20];
-vector<int> g[20];
+void printHere(std::string tag){
+    std::cout<<"You got here: "<<tag<<std::endl;
+}
 
 int n;
-vector<vector<int>> capacity;
-vector<vector<int>> adj;
+std::vector<std::vector<int>> capacity;
+std::vector<std::vector<int>> adj;
 
-int bfs(int s, int t, vector<int>& parent) {
+int bfs(int s, int t, std::vector<int>& parent) {
     fill(parent.begin(), parent.end(), -1);
     parent[s] = -2;
-    queue<pair<int, int>> q;
+    std::queue<std::pair<int, int>> q;
     q.push({s, INF});
 
     while (!q.empty()) {
@@ -28,7 +28,7 @@ int bfs(int s, int t, vector<int>& parent) {
         for (int next : adj[cur]) {
             if (parent[next] == -1 && capacity[cur][next]) {
                 parent[next] = cur;
-                int new_flow = min(flow, capacity[cur][next]);
+                int new_flow = std::min(flow, capacity[cur][next]);
                 if (next == t)
                     return new_flow;
                 q.push({next, new_flow});
@@ -40,8 +40,9 @@ int bfs(int s, int t, vector<int>& parent) {
 }
 
 int maxflow(int s, int t) {
+    printHere("1");
     int flow = 0;
-    vector<int> parent(n);
+    std::vector<int> parent(n);
     int new_flow;
 
     while (new_flow = bfs(s, t, parent)) {
@@ -86,12 +87,12 @@ int main()
    {
       while (f >> from >> to >> cap)
       {
-         c[from][to] = cap;
-         g[from].push_back(to);
-         g[to].push_back(from);
+         capacity[from][to] = cap;
+         adj[from].push_back(to);
+         adj[to].push_back(from);
       }
    }
    f.close();
    int mf = maxflow(source, sink);
-   cout << "Max Flow is:" << mf << endl;
+   std::cout << "Max Flow is:" << mf << std::endl;
 }
