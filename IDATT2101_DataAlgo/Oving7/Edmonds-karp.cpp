@@ -104,7 +104,5 @@ int main()
    }
    f.close();
    int maxFlow = edmondsKarp(source, sink);
-   cout << endl
-        << endl
-        << "Max Flow is:" << maxFlow << endl;
+   cout << "Max Flow is:" << maxFlow << endl;
 }
