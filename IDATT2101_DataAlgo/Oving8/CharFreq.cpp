@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cctype>
 #include <vector>
+#include <algorithm>
 
 typedef struct Node
 {
@@ -21,32 +22,37 @@ Node *newNode(char data, double freq)
 }
 void printNode(Node *n)
 {
-    std::cout << "_________Node_________"<< std::endl;
+    std::cout << "_________Node_________" << std::endl;
     std::cout << "Data: " << n->data << std::endl;
     std::cout << "Freq: " << n->freq << std::endl;
     std::cout << "Left: " << n->left << std::endl;
     std::cout << "Right: " << n->right << std::endl;
 }
-
-
-
+void printVector(std::vector<Node> nodes)
+{
+    for (auto &node : nodes)
+    {
+        printNode(&node);
+    }
+    
+}
 
 //_______________________________________________________________________________________________________________________________________________________________________
 int main()
 {
 
-    std::string text = "text.txt";
+    std::string text = "diverse.lyx";
     std::fstream f(text, std::ios::in);
     char c;
-    int alphabet[28];
-    double freq[28];
-    size_t arrSize = sizeof(alphabet)/sizeof(alphabet[0]) +1;
+    int alphabet[29];
+    double freq[29];
+    size_t arrSize = sizeof(alphabet) / sizeof(alphabet[0]) + 1;
     double totalInputs = 0.0;
     for (size_t i = 0; i < arrSize; i++)
     {
         alphabet[i] = 0;
         freq[i] = 0.0;
-    }    
+    }
 
     if (f.is_open())
     {
@@ -56,11 +62,13 @@ int main()
             c = tolower(c);
             alphabet[(int)c - 'a']++;
             // space
-            if ((int)c == 32)
+            if (c == ' ')
                 alphabet[26]++;
             // new line
-            if ((int)c == 10)
+            else if ((int)c == 10)
                 alphabet[27]++;
+            else if (c == '/')
+                alphabet[28]++;
         }
         f.close();
     }
@@ -77,13 +85,21 @@ int main()
 
     std::vector<Node> nodes;
     Node *n;
-    for (size_t i = 0; i < arrSize-1; i++)
+    for (size_t i = 0; i < arrSize - 1; i++)
     {
-        if(i<26)n = newNode((char)(i + 'a'), freq[i]);
-        else if(i==26)n = newNode((char)(32), freq[i]);
-        else if(i==27)n = newNode((char)(10), freq[i]);
+        if (i < 26)
+            n = newNode((char)(i + 'a'), freq[i]);
+        else if (i == 26)
+            n = newNode(' ', freq[i]);
+        else if (i == 27)
+            n = newNode((char)(10), freq[i]);
+        else if (i == 28)
+            n = newNode('/', freq[i]);
         nodes.push_back(*n);
-        printNode(n);        
     }
+    sort(nodes.begin(), nodes.end(),[](Node a, Node b) {
+        return a.freq < b.freq;
+    });
+    printVector(nodes);
     return 0;
 }
