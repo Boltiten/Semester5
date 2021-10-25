@@ -1,30 +1,31 @@
 #include <cstdio>
 #include <queue>
 #include <cstring>
+#include <string>
 #include <vector>
 #include <iostream>
 #include <fstream>
 
 
-using namespace std;
-int c[20][20];
-int flowPassed[20][20];
-vector<int> g[20];
-int parList[20];
-int currentPathC[20];
+int c[255][255];
+int flowPassed[255][255];
+std::vector<int> g[255];
+int parList[255];
+int currentPathC[255];
 
 
-int bfs(int sNode, int eNode) // breadth first search
+int bfs(int sNode, int eNode)
 {
    memset(parList, -1, sizeof(parList));
    memset(currentPathC, 0, sizeof(currentPathC));
-   queue<int> q; // declare queue vector
+   std::queue<int> q;
    q.push(sNode);
-   parList[sNode] = -1;       // initialize parlist’s source node
-   currentPathC[sNode] = 999; // initialize currentpath’s source node
-   while (!q.empty())         // if q is not empty
+   parList[sNode] = -1; 
+   currentPathC[sNode] = 999; 
+   while (!q.empty())
    {
       int currNode = q.front();
+      
       q.pop();
       for (int i = 0; i < g[currNode].size(); i++)
       {
@@ -34,13 +35,15 @@ int bfs(int sNode, int eNode) // breadth first search
             if (c[currNode][to] - flowPassed[currNode][to] > 0)
             {
                parList[to] = currNode;
-               currentPathC[to] = min(currentPathC[currNode],
-                                      c[currNode][to] - flowPassed[currNode][to]);
+               currentPathC[to] = std::min(currentPathC[currNode],
+                                      c[currNode][to] - flowPassed[currNode][to]);         
+               
                if (to == eNode)
-               {
+               {         
                   return currentPathC[eNode];
                }
                q.push(to);
+               
             }
          }
       }
@@ -50,6 +53,7 @@ int bfs(int sNode, int eNode) // breadth first search
 int edmondsKarp(int sNode, int eNode)
 {
    int maxFlow = 0;
+   std::cout<<"Flow"<<"  "<<"Path"<<std::endl;
    while (true)
    {
       int flow = bfs(sNode, eNode);
@@ -58,15 +62,20 @@ int edmondsKarp(int sNode, int eNode)
          break;
       }
       maxFlow += flow;
-      int currNode = eNode;
+      int currNode = eNode;  
+      std::cout<<flow<<"     ";
+      std::cout<<eNode<<" ";
       while (currNode != sNode)
       {
          int prevNode = parList[currNode];
+         std::cout<<std::to_string(prevNode)<<" ";
          flowPassed[prevNode][currNode] += flow;
          flowPassed[currNode][prevNode] -= flow;
          currNode = prevNode;
       }
+      std::cout<<std::endl;
    }
+   std::cout << "Max Flow is:" << maxFlow << std::endl;
    return maxFlow;
 }
 int main()
@@ -103,6 +112,6 @@ int main()
       }
    }
    f.close();
-   int maxFlow = edmondsKarp(source, sink);
-   cout << "Max Flow is:" << maxFlow << endl;
+   int maxFlow = edmondsKarp(source, sink); 
+   
 }

@@ -87,7 +87,10 @@ int main()
    {
       while (f >> from >> to >> cap)
       {
-         capacity[from][to] = cap;
+          
+         capacity[from][to].push_back(cap);
+         
+         printHere("asd");
          adj[from].push_back(to);
          adj[to].push_back(from);
       }
