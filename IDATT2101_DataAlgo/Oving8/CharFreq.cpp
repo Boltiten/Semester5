@@ -20,6 +20,16 @@ Node *newNode(char data, double freq)
     node->left = node->right = NULL;
     return node;
 }
+Node *newParent(Node *left, Node *right)
+{
+    Node *node = new Node;
+    node->data = ' ';
+    node->freq = left->freq + right->freq;
+    node->left = left;
+    node->right = right;
+
+    return node;
+}
 void printNode(Node *n)
 {
     std::cout << "_________Node_________" << std::endl;
@@ -33,19 +43,20 @@ void printVector(std::vector<Node> nodes)
     for (auto &node : nodes)
     {
         printNode(&node);
-    }
-    
+    }    
 }
+
+
 
 //_______________________________________________________________________________________________________________________________________________________________________
 int main()
 {
 
-    std::string text = "diverse.lyx";
+    std::string text = "diverse.txt";
     std::fstream f(text, std::ios::in);
     char c;
-    int alphabet[29];
-    double freq[29];
+    int alphabet[255];
+    double freq[255];
     size_t arrSize = sizeof(alphabet) / sizeof(alphabet[0]) + 1;
     double totalInputs = 0.0;
     for (size_t i = 0; i < arrSize; i++)
@@ -59,24 +70,15 @@ int main()
 
         while (f.get(c))
         {
-            c = tolower(c);
-            alphabet[(int)c - 'a']++;
-            // space
-            if (c == ' ')
-                alphabet[26]++;
-            // new line
-            else if ((int)c == 10)
-                alphabet[27]++;
-            else if (c == '/')
-                alphabet[28]++;
+            //c = tolower(c);
+            alphabet[(int)c]++;
+            totalInputs++;
+            
         }
         f.close();
     }
-    for (size_t i = 0; i < arrSize; i++)
-    {
-        totalInputs += alphabet[i];
-    }
-    for (size_t i = 0; i < arrSize; i++)
+
+    for (size_t i = 0; i < arrSize-1; i++)
     {
         freq[i] = alphabet[i] / totalInputs;
     }
@@ -87,19 +89,24 @@ int main()
     Node *n;
     for (size_t i = 0; i < arrSize - 1; i++)
     {
-        if (i < 26)
-            n = newNode((char)(i + 'a'), freq[i]);
-        else if (i == 26)
-            n = newNode(' ', freq[i]);
-        else if (i == 27)
-            n = newNode((char)(10), freq[i]);
-        else if (i == 28)
-            n = newNode('/', freq[i]);
-        nodes.push_back(*n);
+        if(freq[i] != 0)
+        {
+            n = newNode((char)i, freq[i]);
+            nodes.push_back(*n);
+        }
+        
     }
     sort(nodes.begin(), nodes.end(),[](Node a, Node b) {
         return a.freq < b.freq;
     });
-    printVector(nodes);
+    
+    //printVector(nodes);
+
+
+    //virker, henter de 2 minste
+    Node *parent = newParent(&nodes.at(0), &nodes.at(1));
+    std::cout<<std::endl;
+    std::cout<<"Parent"<<std::endl;
+    printNode(parent);
     return 0;
 }
