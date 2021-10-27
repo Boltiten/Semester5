@@ -1,23 +1,21 @@
 UserName;Dish;Score
-nilstesd;Pizza Napolitana;6
-nilstesd;Pizza Margherita;4
-nilstesd;Pasta Bolognese;5
-nilstesd;Pasta Carbonara;5
-nilstesd;Chicken Curry;4
-nilstesd;Chicken Tikka Masala;5
-nilstesd;Chili Con Carne;4
-nilstesd;Kebab;3
-nilstesd;Sushi;6
-nilstesd;Paella;6
-nilstesd;Bacalao;6
-nilstesd;Taco;2
-nilstesd;Sweet And Sour Pork;3
-nilstesd;MacDonalds Cheeseburger;1
-nilstesd;Kentucky Fried Chicken;2
-nilstesd;Lutefisk;5
-nilstesd;Coq au vin;5
-nilstesd;Ratatouille;4
-nilstesd;Moules frites;5
+mortse;Pizza Napolitana;3
+mortse;Pizza Margherita;3
+mortse;Pasta Bolognese;5
+mortse;Pasta Carbonara;7
+mortse;Chicken Curry;9
+mortse;Chicken Tikka Masala;9
+mortse;Chili Con Carne;3
+mortse;Kebab;6
+mortse;Sushi;6
+mortse;Paella;4
+mortse;Bacalao;1
+mortse;Taco;10
+mortse;Sweet And Sour Pork;3
+mortse;MacDonalds Cheeseburger;3
+mortse;Kentucky Fried Chicken;2
+mortse;Lutefisk;5
+mortse;Ratatouille;4
 kjetsand;Pizza Napolitana;4
 kjetsand;Pizza Margherita;3
 kjetsand;Pasta Bolognese;3
