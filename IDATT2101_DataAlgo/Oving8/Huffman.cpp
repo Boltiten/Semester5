@@ -30,6 +30,11 @@ Node *newParent(Node *left, Node *right)
 
     return node;
 }
+
+void buildTree(Node* node, int index)
+{
+    
+}
 void printNode(Node *n)
 {
     std::cout << "_________Node_________" << std::endl;
@@ -52,7 +57,7 @@ void printVector(std::vector<Node> nodes)
 int main()
 {
 
-    std::string text = "diverse.txt";
+    std::string text = "diverse.pdf";
     std::fstream f(text, std::ios::in);
     char c;
     int alphabet[255];
