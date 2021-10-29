@@ -31,7 +31,7 @@ Node *newParent(Node *left, Node *right)
     return node;
 }
 
-void buildTree(Node* node, int index)
+void buildTree()
 {
     
 }
@@ -60,8 +60,8 @@ int main()
     std::string text = "diverse.pdf";
     std::fstream f(text, std::ios::in);
     char c;
-    int alphabet[255];
-    double freq[255];
+    int alphabet[256];
+    double freq[256];
     size_t arrSize = sizeof(alphabet) / sizeof(alphabet[0]) + 1;
     double totalInputs = 0.0;
     for (size_t i = 0; i < arrSize; i++)
