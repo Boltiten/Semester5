@@ -56,7 +56,6 @@ void printVector(std::vector<Node> nodes)
 //_______________________________________________________________________________________________________________________________________________________________________
 int main()
 {
-
     std::string text = "diverse.pdf";
     std::fstream f(text, std::ios::in);
     char c;
