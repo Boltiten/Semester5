@@ -6,9 +6,16 @@ import java.util.*;
 public class HuffmanJava{
     public static void main(String[] args) 
     {
+        //Entry
         int size = 6;
         char[] charArray = { 'a', 'b', 'c', 'd', 'e', 'f' };
         int[] charfreq = { 5, 9, 12, 13, 16, 45 };
+        /* 
+        DataInputStream input = new DataInputStream(new BufferedInputStream(new FileInputStream("diverse.txt")));
+        DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("diverseHuffed.txt")));
+         */
+
+
         PriorityQueue<Node> queue = new PriorityQueue<Node>(size, new CompareNodes());
         //inputs
         for (int i = 0; i < size; i++) {
@@ -35,7 +42,8 @@ public class HuffmanJava{
             queue.add(parent);
         }
         printCode(root, "");
-
+        //Writeout
+        /* output.writeLong(l); */
     }
     public static void printCode(Node root, String s)
     {
