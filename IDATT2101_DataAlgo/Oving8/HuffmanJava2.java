@@ -18,18 +18,27 @@ public class HuffmanJava2 {
     }
 
     public void compress(byte[] compressedBytes, String outpath) throws IOException {
-        getFreqFromInput(compressedBytes);
+        getFrequenciesFromBytes(compressedBytes);
         Node root = buildHuffmanTree();
         printCode(root, "");
         writeOutputFile(outpath, compressedBytes);
     }
 
-    private void getFreqFromInput(byte[] compressedBytes) {
+    private void getFrequenciesFromBytes(byte[] compressedBytes) {
         for (int b : compressedBytes) {
             if (b < 0)
                 freq[MAX_BYTE + b]++;
             else
                 freq[b]++;
+        }
+    }
+    private void getFrequenciesFromDIS(DataInputStream input) throws IOException
+    {
+        freq = new int[MAX_BYTE];
+
+        for (int i = 0; i < freq.length; i++) {
+            int frequency = input.readInt();
+            freq[i] = frequency;
         }
     }
 
@@ -129,6 +138,12 @@ public class HuffmanJava2 {
         bytes.add((byte)currentByte);
         return lastByte;
     }
+
+    public byte[] decompress() throws IOException
+    {
+
+    }
+
 
 }
 

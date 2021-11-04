@@ -16,7 +16,7 @@ public class HuffmanJava{
          */
 
 
-        PriorityQueue<Node> queue = new PriorityQueue<Node>(size, new CompareNodes());
+        PriorityQueue<Node> queue = new PriorityQueue<Node>(size);
         //inputs
         for (int i = 0; i < size; i++) {
             Node n = new Node();
@@ -56,5 +56,19 @@ public class HuffmanJava{
         printCode(root.right, s + "1");
     }
 }
+
+class Node implements Comparator<Node> {
+    int freq;
+    char c;
+
+    Node right;
+    Node left;
+
+    @Override
+    public int compare(Node x, Node y) {
+        return x.freq - y.freq;
+    }
+}
+
 
 
