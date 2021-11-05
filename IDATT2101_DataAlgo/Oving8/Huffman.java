@@ -1,9 +1,9 @@
-package IDATT2101_DataAlgo.Oving8;
+//package IDATT2101_DataAlgo.Oving8;
 
 import java.util.*;
 import java.io.*;
 
-public class HuffmanJava2 {
+public class Huffman {
     private final static int MAX_BYTE = 256;
 
     private ArrayList<Byte> bytes;
@@ -11,7 +11,7 @@ public class HuffmanJava2 {
     private String[] bitstrings;
     private DataOutputStream output;
 
-    public HuffmanJava2() {
+    public Huffman() {
         this.freq = new int[MAX_BYTE];
         this.bitstrings = new String[MAX_BYTE];
         bytes = new ArrayList<>();
