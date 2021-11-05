@@ -6,7 +6,7 @@ import java.io.*;
 public class HuffmanJava2 {
     private final static int MAX_BYTE = 256;
 
-    private List<Byte> bytes;
+    private ArrayList<Byte> bytes;
     private int[] freq;
     private String[] bitstrings;
     private DataOutputStream output;
@@ -139,9 +139,105 @@ public class HuffmanJava2 {
         return lastByte;
     }
 
-    public byte[] decompress() throws IOException
+    public byte[] decompress(String file) throws IOException
     {
+        DataInputStream input = new DataInputStream(new FileInputStream(file));
+        getFrequenciesFromDIS(input);
 
+        int lastByte = input.readInt();
+        Node root = buildHuffmanTree();
+
+        byte charByte;
+        byte[] bytesArray = input.readAllBytes();
+        input.close();
+
+        int l = bytesArray.length;
+
+        if(lastByte>0)l--;
+        ArrayList<Byte> outputBytes = new ArrayList<>();
+        BitString h = new BitString(0, 0);
+
+        for (int i = 0; i < l; i++) {
+            charByte = bytesArray[i];
+            BitString bitString = new BitString(8, charByte);
+            h = bitString.concat(h, bitString);
+            h = writeCharactersTo(root, h, outputBytes);
+        }
+        if(lastByte>0)
+        {
+            BitString b = new BitString(lastByte, bytesArray[l] >> (8 - lastByte));
+            h = BitString.concat(h, b);
+            writeCharactersTo(root, h, outputBytes);           
+        }
+
+        //translate arraylist to array
+        byte[] outputArray = new byte[outputBytes.size()];
+        for (int i = 0; i < outputBytes.size(); i++) {
+            outputArray[i] = outputBytes.get(i);
+        }
+
+        return outputArray;
+    }
+
+    private static BitString writeCharactersTo(Node tree, BitString bitstring, ArrayList<Byte> decompressedBytes) {
+        Node tempTree = tree;
+        int c = 0;
+
+        for (long j = 1 << bitstring.length - 1; j != 0; j >>= 1) {
+            c++;
+            if ((bitstring.bits & j) == 0)
+                tempTree = tempTree.left;
+            else
+                tempTree = tempTree.right;
+
+            if (tempTree.left == null) {
+                long character = tempTree.c;
+                decompressedBytes.add((byte) character);
+                long temp = ~(0);
+                bitstring.bits = (bitstring.bits & temp);
+                bitstring.length = bitstring.length - c;
+                c = 0;
+                tempTree = tree;
+            }
+        }
+
+        return bitstring;
+    }
+    static class BitString {
+        int length;
+        long bits;
+
+        BitString(int length, long bitsAsLong) {
+            this.length = length;
+            this.bits = bitsAsLong;
+        }
+
+        BitString(int length, byte bits) {
+            this.length = length;
+            this.bits = convertByte(bits, length);
+        }
+
+        static BitString concat(BitString bitstring, BitString other) {
+            int length = bitstring.length + other.length;
+            long bits = other.bits | (bitstring.bits << other.length);
+
+            if (length > 64)
+                throw new IllegalArgumentException(
+                        "Bitstring too long: " + bits + ", length=" + length);
+
+            return new BitString(length, bits);
+        }
+
+        public long convertByte(byte bite, int length) {
+            long temp = 0;
+            for (long i = 1 << length - 1; i != 0; i >>= 1)
+                if ((bite & i) == 0)
+                    temp = (temp << 1);
+                 else
+                     temp = ((temp << 1) | 1);
+
+            return temp;
+        }
     }
 
 

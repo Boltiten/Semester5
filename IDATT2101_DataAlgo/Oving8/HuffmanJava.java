@@ -57,18 +57,6 @@ public class HuffmanJava{
     }
 }
 
-class Node implements Comparator<Node> {
-    int freq;
-    char c;
-
-    Node right;
-    Node left;
-
-    @Override
-    public int compare(Node x, Node y) {
-        return x.freq - y.freq;
-    }
-}
 
 
 
