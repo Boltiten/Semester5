@@ -4,12 +4,11 @@ import java.util.*;
 import java.io.*;
 
 public class Huffman {
-    private final static int MAX_BYTE = 256;
+    private static final int MAX_BYTE = 256;
 
     private ArrayList<Byte> bytes;
     private int[] freq;
     private String[] bitstrings;
-    private DataOutputStream output;
 
     public Huffman() {
         this.freq = new int[MAX_BYTE];
@@ -88,7 +87,7 @@ public class Huffman {
     }
 
     private void writeOutputFile(String outpath, byte[] compressedBytes) throws IOException {
-        output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(outpath)));
+        DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(outpath)));
 
         for (int i : freq) {
             output.writeInt(i);
@@ -160,8 +159,8 @@ public class Huffman {
         for (int i = 0; i < l; i++) {
             charByte = bytesArray[i];
             BitString bitString = new BitString(8, charByte);
-            h = bitString.concat(h, bitString);
-            h = writeCharactersTo(root, h, outputBytes);
+            h = Huffman.BitString.concat(h, bitString);
+            writeCharactersTo(root, h, outputBytes);
         }
         if(lastByte>0)
         {
