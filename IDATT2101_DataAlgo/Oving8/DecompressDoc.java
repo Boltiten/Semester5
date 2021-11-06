@@ -8,7 +8,7 @@ public class DecompressDoc {
     public static void main(String[] args) throws IOException
     {
         String compressed = "IDATT2101_DataAlgo\\Oving8\\compressedFile";
-        String out = "IDATT2101_DataAlgo\\Oving8\\decompressedFile.lyx";
+        String out = "IDATT2101_DataAlgo\\Oving8\\decompressedFile.txt";
 
         DecompressDoc d = new DecompressDoc();
         d.decompressDocument(compressed, out);

@@ -1,12 +1,11 @@
 
 import java.io.*;
 import java.nio.file.Files;
-import java.util.*;
 
 public class CompressDoc {
     public static void main(String[] args) throws IOException
     {
-        String in = "IDATT2101_DataAlgo\\Oving8\\diverse.lyx";
+        String in = "IDATT2101_DataAlgo\\Oving8\\diverse.txt";
         String out = "IDATT2101_DataAlgo\\Oving8\\compressedFile";
 
         CompressDoc c = new CompressDoc();
