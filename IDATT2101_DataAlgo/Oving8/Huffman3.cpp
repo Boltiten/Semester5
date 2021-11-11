@@ -246,7 +246,7 @@ int main()
         freq[i] = alphabet[i] / totalInputs;
     }
 
-    /* std::cout << totalInputs << " chars counted" << std::endl;
+    std::cout << totalInputs << " chars counted" << std::endl;
 
     std::vector<Node> nodes;
     Node *n;
@@ -272,7 +272,7 @@ int main()
     Node *parent = newParent(&nodes.at(0), &nodes.at(1));
     std::cout<<std::endl;
     std::cout<<"Parent"<<std::endl;
-    printNode(parent); */
+    printNode(parent);
 
     HuffmanCodes(alphabet, freq, arrSize-1);
 
