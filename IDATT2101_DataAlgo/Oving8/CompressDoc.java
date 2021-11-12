@@ -17,8 +17,6 @@ public class CompressDoc {
     {
         LZ77 lz77 = new LZ77();
         byte[] compressedBytes = lz77.compress(in);
-        File file = new File(in);
-        byte[] filecontent = Files.readAllBytes(file.toPath());
         Huffman h = new Huffman();
         h.compress(compressedBytes, out);
     }
