@@ -58,6 +58,7 @@
         "functional": "cpp",
         "unordered_map": "cpp",
         "xhash": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "sstream": "cpp"
     }
 }
